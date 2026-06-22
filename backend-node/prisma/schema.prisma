@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  admin
+  analyst
+  viewer
+}
+
+enum IndicatorType {
+  IP
+  DOMAIN
+  URL
+  HASH
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum AlertStatus {
+  OPEN
+  ACKNOWLEDGED
+  RESOLVED
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      UserRole @default(analyst)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lookups Lookup[]
+
+  @@map("users")
+}
+
+model Indicator {
+  id        Int           @id @default(autoincrement())
+  type      IndicatorType
+  value     String        @unique
+  riskScore Int           @default(0)
+  severity  Severity      @default(LOW)
+  source    String        @default("manual")
+  country   String?
+  asn       String?
+  tags      String[]
+  firstSeen DateTime      @default(now())
+  lastSeen  DateTime      @default(now())
+
+  lookups Lookup[]
+  alerts  Alert[]
+
+  @@index([type])
+  @@index([severity])
+  @@map("indicators")
+}
+
+model Lookup {
+  id          Int      @id @default(autoincrement())
+  query       String
+  result      Json
+  createdAt   DateTime @default(now())
+
+  userId      Int?
+  user        User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  indicatorId Int?
+  indicator   Indicator? @relation(fields: [indicatorId], references: [id], onDelete: SetNull)
+
+  @@map("lookups")
+}
+
+model ThreatFeed {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  sourceUrl String?
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@map("threat_feeds")
+}
+
+model Alert {
+  id          Int         @id @default(autoincrement())
+  title       String
+  message     String
+  severity    Severity
+  status      AlertStatus @default(OPEN)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  indicatorId Int?
+  indicator   Indicator? @relation(fields: [indicatorId], references: [id], onDelete: SetNull)
+
+  @@index([severity])
+  @@index([status])
+  @@map("alerts")
+}
+
+model Report {
+  id        Int      @id @default(autoincrement())
+  name      String
+  format    String
+  payload   Json
+  createdAt DateTime @default(now())
+
+  @@map("reports")
+}
+
+model ApiSource {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@map("api_sources")
+}
