@@ -199,4 +199,3 @@ VITE_API_URL=<backend-api-url>
 - Use the demo lookup mode for portfolio screenshots when you do not want to expose real API keys.
 - Do not commit `.env` files.
 - Only check indicators and threat feeds that you are allowed to analyze.
-
