@@ -12,9 +12,19 @@ const lookupSchema = z.object({
   value: z.string().min(3)
 });
 
+function inferMitreTechnique(type: string, tags: string[]) {
+  const normalized = tags.join(" ").toLowerCase();
+  if (normalized.includes("phishing") || type === "URL") return "T1566 - Phishing";
+  if (normalized.includes("malware") || type === "HASH") return "T1204 - User Execution";
+  if (normalized.includes("botnet") || normalized.includes("abuse")) return "T1071 - Application Layer Protocol";
+  if (type === "DOMAIN") return "T1568 - Dynamic Resolution";
+  return "T1595 - Active Scanning";
+}
+
 lookupsRouter.post("", requireAuth, requireRoles("admin", "analyst"), async (req: AuthRequest, res) => {
   const payload = lookupSchema.parse(req.body);
   const analysis = await analyzeIndicator(payload.type, payload.value);
+  const mitreTechnique = inferMitreTechnique(payload.type, analysis.tags);
 
   const indicator = await prisma.indicator.upsert({
     where: { value: payload.value },
@@ -25,6 +35,7 @@ lookupsRouter.post("", requireAuth, requireRoles("admin", "analyst"), async (req
       source: analysis.sources.join(", "),
       country: analysis.country,
       asn: analysis.asn,
+      mitreTechnique,
       tags: analysis.tags,
       lastSeen: new Date()
     },
@@ -36,7 +47,18 @@ lookupsRouter.post("", requireAuth, requireRoles("admin", "analyst"), async (req
       source: analysis.sources.join(", "),
       country: analysis.country,
       asn: analysis.asn,
+      mitreTechnique,
       tags: analysis.tags
+    }
+  });
+
+  await prisma.reputationSnapshot.create({
+    data: {
+      indicatorId: indicator.id,
+      riskScore: analysis.riskScore,
+      severity: analysis.severity,
+      sources: analysis.sources,
+      summary: analysis.summary
     }
   });
 
@@ -75,3 +97,12 @@ lookupsRouter.get("", requireAuth, async (_req, res) => {
   return res.json(lookups);
 });
 
+lookupsRouter.get("/:indicatorId/history", requireAuth, async (req, res) => {
+  const indicatorId = Number(req.params.indicatorId);
+  const history = await prisma.reputationSnapshot.findMany({
+    where: { indicatorId },
+    orderBy: { createdAt: "desc" },
+    take: 25
+  });
+  return res.json(history);
+});

@@ -4,12 +4,34 @@ ThreatLens is a threat intelligence and OSINT platform for checking indicators o
 
 It complements SIEM-style projects: a SIEM detects suspicious activity, while ThreatLens enriches suspicious IPs, domains, URLs and hashes with reputation data.
 
+## Project Identity
+
+**ThreatLens** is a Threat Intelligence / OSINT portfolio project focused on IOC reputation lookup, enrichment history, analyst watchlists and investigation case management.
+
+## Screenshots
+
+The screenshots below use sanitized demo data and documentation IP ranges.
+
+### Threat intelligence dashboard
+
+<img src="docs/screenshots/threatlens-dashboard.svg" alt="ThreatLens threat intelligence dashboard" width="900" />
+
+### IOC lookup and enrichment
+
+<img src="docs/screenshots/threatlens-lookup.svg" alt="ThreatLens IOC lookup screen" width="900" />
+
 ## Features
 
 - JWT authentication with admin, analyst and viewer roles
 - IOC lookup for IP, domain, URL and hash indicators
 - Optional AbuseIPDB and VirusTotal integrations
 - Python FastAPI analyzer microservice
+- MITRE ATT&CK technique mapping for enriched indicators
+- IOC watchlist for indicators that require monitoring
+- True positive / false positive verdict field for triage
+- Case management for analyst investigations
+- Reputation snapshot history per indicator
+- Basic external feed import endpoint for IOC lists
 - Risk scoring from 0 to 100 with LOW, MEDIUM and HIGH severity
 - PostgreSQL persistence for indicators, lookups, feeds, alerts and reports
 - Realtime alert notifications with Socket.IO
@@ -96,6 +118,14 @@ Email: admin@threatlens.local
 Password: Admin1234
 ```
 
+## Testing
+
+- Backend TypeScript production build.
+- Frontend production build with Vite.
+- Python analyzer syntax validation.
+- Docker Compose configuration validation.
+- Recommended next tests: IOC lookup, RBAC permissions, alert creation, watchlist items and case lifecycle.
+
 ## Run Locally
 
 Backend:
@@ -155,8 +185,14 @@ Analyze a suspicious domain:
 | POST | `/auth/register` | Admin-only user creation |
 | POST | `/lookups` | Analyze an IOC |
 | GET | `/lookups` | Lookup history |
+| GET | `/lookups/:indicatorId/history` | Reputation history for an IOC |
 | GET | `/indicators` | Stored IOC inventory |
 | GET | `/alerts` | Threat intelligence alerts |
+| GET | `/watchlist` | Analyst IOC watchlist |
+| POST | `/watchlist` | Add IOC to watchlist |
+| GET | `/cases` | Investigation cases |
+| POST | `/cases` | Open investigation case |
+| POST | `/feeds/import` | Import a simple IOC feed |
 | GET | `/dashboard` | Dashboard metrics |
 | GET | `/reports/indicators.csv` | CSV IOC export |
 | GET | `/reports/summary.json` | JSON summary export |
@@ -199,3 +235,17 @@ VITE_API_URL=<backend-api-url>
 - Use the demo lookup mode for portfolio screenshots when you do not want to expose real API keys.
 - Do not commit `.env` files.
 - Only check indicators and threat feeds that you are allowed to analyze.
+
+## What I Learned
+
+- Threat intelligence workflows and IOC enrichment.
+- OSINT-style analyzer service design.
+- JWT authentication with admin, analyst and viewer roles.
+- PostgreSQL modeling for indicators, lookups, alerts, reports, watchlists and cases.
+- MITRE ATT&CK mapping as analyst context.
+- Realtime alert delivery with Socket.IO.
+- Dockerized multi-service architecture for backend, analyzer, database and frontend.
+
+## License
+
+MIT License.

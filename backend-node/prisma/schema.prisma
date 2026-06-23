@@ -32,6 +32,18 @@ enum AlertStatus {
   RESOLVED
 }
 
+enum IndicatorVerdict {
+  UNKNOWN
+  TRUE_POSITIVE
+  FALSE_POSITIVE
+}
+
+enum CaseStatus {
+  OPEN
+  INVESTIGATING
+  CLOSED
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   name      String
@@ -52,15 +64,20 @@ model Indicator {
   value     String        @unique
   riskScore Int           @default(0)
   severity  Severity      @default(LOW)
+  verdict   IndicatorVerdict @default(UNKNOWN)
   source    String        @default("manual")
   country   String?
   asn       String?
+  mitreTechnique String?
   tags      String[]
   firstSeen DateTime      @default(now())
   lastSeen  DateTime      @default(now())
 
   lookups Lookup[]
   alerts  Alert[]
+  reputationSnapshots ReputationSnapshot[]
+  watchlistItems WatchlistItem[]
+  cases ThreatCase[]
 
   @@index([type])
   @@index([severity])
@@ -79,6 +96,51 @@ model Lookup {
   indicator   Indicator? @relation(fields: [indicatorId], references: [id], onDelete: SetNull)
 
   @@map("lookups")
+}
+
+model ReputationSnapshot {
+  id          Int      @id @default(autoincrement())
+  riskScore   Int
+  severity    Severity
+  sources     String[]
+  summary     String
+  createdAt   DateTime @default(now())
+
+  indicatorId Int
+  indicator   Indicator @relation(fields: [indicatorId], references: [id], onDelete: Cascade)
+
+  @@index([indicatorId])
+  @@map("reputation_snapshots")
+}
+
+model WatchlistItem {
+  id          Int      @id @default(autoincrement())
+  reason      String
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  indicatorId Int
+  indicator   Indicator @relation(fields: [indicatorId], references: [id], onDelete: Cascade)
+
+  @@unique([indicatorId])
+  @@map("watchlist_items")
+}
+
+model ThreatCase {
+  id          Int        @id @default(autoincrement())
+  title       String
+  status      CaseStatus @default(OPEN)
+  severity    Severity   @default(MEDIUM)
+  notes       String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  indicatorId Int?
+  indicator   Indicator? @relation(fields: [indicatorId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([severity])
+  @@map("threat_cases")
 }
 
 model ThreatFeed {

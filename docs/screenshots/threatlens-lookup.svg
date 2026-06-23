@@ -1,0 +1,17 @@
+<svg width="1440" height="820" viewBox="0 0 1440 820" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1440" height="820" fill="#070f1d"/>
+  <text x="160" y="105" fill="#f8fafc" font-family="Segoe UI, Arial" font-size="34" font-weight="800">IOC Lookup</text>
+  <text x="160" y="136" fill="#93c5fd" font-family="Segoe UI, Arial" font-size="16">Analyze reputation using OSINT connectors and store the investigation trail.</text>
+  <rect x="160" y="175" width="1120" height="190" rx="16" fill="#101c2e" stroke="#263a57"/>
+  <text x="195" y="225" fill="#cbd5e1" font-family="Segoe UI, Arial" font-size="15">Type</text><rect x="195" y="240" width="230" height="48" rx="8" fill="#0b1424" stroke="#334155"/><text x="218" y="271" fill="#fff" font-family="Segoe UI, Arial" font-size="16">IP</text>
+  <text x="455" y="225" fill="#cbd5e1" font-family="Segoe UI, Arial" font-size="15">Value</text><rect x="455" y="240" width="450" height="48" rx="8" fill="#0b1424" stroke="#334155"/><text x="478" y="271" fill="#fff" font-family="Segoe UI, Arial" font-size="16">203.0.113.77</text>
+  <rect x="930" y="240" width="290" height="48" rx="8" fill="#2563eb"/><text x="1023" y="271" fill="#fff" font-family="Segoe UI, Arial" font-size="16" font-weight="700">Analyze IOC</text>
+  <rect x="160" y="405" width="1120" height="275" rx="16" fill="#101c2e" stroke="#263a57"/>
+  <text x="195" y="455" fill="#f8fafc" font-family="Segoe UI, Arial" font-size="22" font-weight="700">Enrichment result</text>
+  <g font-family="Segoe UI, Arial" font-size="16">
+    <text x="195" y="510" fill="#93c5fd">Risk score</text><text x="370" y="510" fill="#ef4444" font-weight="800">89 / HIGH</text>
+    <text x="195" y="555" fill="#93c5fd">Sources</text><text x="370" y="555" fill="#f8fafc">AbuseIPDB, VirusTotal, Demo feed</text>
+    <text x="195" y="600" fill="#93c5fd">MITRE</text><text x="370" y="600" fill="#f8fafc">T1071 - Application Layer Protocol</text>
+    <text x="195" y="645" fill="#93c5fd">Case action</text><text x="370" y="645" fill="#f8fafc">Added to watchlist and opened investigation case #5</text>
+  </g>
+</svg>
