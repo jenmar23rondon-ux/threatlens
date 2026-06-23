@@ -8,6 +8,19 @@ It complements SIEM-style projects: a SIEM detects suspicious activity, while Th
 
 **ThreatLens** is a Threat Intelligence / OSINT portfolio project focused on IOC reputation lookup, enrichment history, analyst watchlists and investigation case management.
 
+## Live Demo
+
+[Open ThreatLens](https://threatlens.vercel.app)
+
+Demo credentials:
+
+```text
+Email: admin@threatlens.local
+Password: Admin1234
+```
+
+> This is an educational portfolio environment. Demo data may be changed or reset.
+
 ## Screenshots
 
 The screenshots below use sanitized demo data and documentation IP ranges.
@@ -245,6 +258,13 @@ VITE_API_URL=<backend-api-url>
 - MITRE ATT&CK mapping as analyst context.
 - Realtime alert delivery with Socket.IO.
 - Dockerized multi-service architecture for backend, analyzer, database and frontend.
+
+## Author
+
+Built by Jenmar Rondon.
+
+- GitHub: [jenmar23rondon-ux](https://github.com/jenmar23rondon-ux)
+- Repository: [threatlens](https://github.com/jenmar23rondon-ux/threatlens)
 
 ## License
 
