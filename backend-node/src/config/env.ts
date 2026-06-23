@@ -13,3 +13,7 @@ export const env = {
   analyzerUrl: process.env.ANALYZER_URL || "http://localhost:8002"
 };
 
+export const isAllowedOrigin = (origin?: string) => {
+  if (!origin) return true;
+  return env.allowedOrigins.includes(origin) || /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin);
+};

@@ -1,13 +1,13 @@
 import http from "http";
 import { Server } from "socket.io";
 import { app } from "./app";
-import { env } from "./config/env";
+import { env, isAllowedOrigin } from "./config/env";
 import { setSocket } from "./config/socket";
 
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: env.allowedOrigins,
+    origin: (origin, callback) => callback(null, isAllowedOrigin(origin)),
     credentials: true
   }
 });
@@ -21,4 +21,3 @@ io.on("connection", (socket) => {
 server.listen(env.port, () => {
   console.log(`ThreatLens API running on http://localhost:${env.port}`);
 });
-

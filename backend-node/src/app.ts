@@ -2,7 +2,7 @@ import cors from "cors";
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
-import { env } from "./config/env";
+import { isAllowedOrigin } from "./config/env";
 import { errorMiddleware } from "./middlewares/error.middleware";
 import { alertsRouter } from "./modules/alerts/alerts.routes";
 import { authRouter } from "./modules/auth/auth.routes";
@@ -17,7 +17,12 @@ import { watchlistRouter } from "./modules/watchlist/watchlist.routes";
 export const app = express();
 
 app.use(helmet());
-app.use(cors({ origin: env.allowedOrigins, credentials: true }));
+app.use(
+  cors({
+    origin: (origin, callback) => callback(null, isAllowedOrigin(origin)),
+    credentials: true
+  })
+);
 app.use(express.json({ limit: "1mb" }));
 app.use(morgan("dev"));
 
